@@ -5,5 +5,5 @@ data class Student(
   val studentNumber: String = "",
   val institution: String = "",
   val major: String = "",
-  val detailUrlPath: String = ""
+  val hash: String = ""
 )

@@ -20,12 +20,9 @@ class StudentRepository(private val httpClient: HttpClient) {
   fun findStudent(searchTerm: String) = flow {
     try {
       val url = "${Constants.BASE_URL}${STUDENT_SEARCH_PATH}${searchTerm.encodeURLPathPart()}"
-      println("Hitting ${url}")
       val response = httpClient.get(url).body<StudentSearchResponse>()
-      println("success $response")
       emit(Result.success(response.toStudents()))
     } catch (e: Exception) {
-      println("error $e")
       emit(Result.failure(e))
     }
   }
@@ -33,12 +30,9 @@ class StudentRepository(private val httpClient: HttpClient) {
   fun getStudentDetail(studentHash: String) = flow {
     try {
       val url = "${Constants.BASE_URL}${STUDENT_DETAIL_PATH}${studentHash}"
-      println("Hitting ${url}")
       val response = httpClient.get(url).body<StudentDetailResponse>()
-      println("success $response")
       emit(Result.success(response.toStudentDetail()))
     } catch (e: Exception) {
-      println("error $e")
       emit(Result.failure(e))
     }
   }

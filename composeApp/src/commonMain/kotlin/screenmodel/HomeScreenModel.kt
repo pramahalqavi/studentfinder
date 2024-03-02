@@ -1,7 +1,6 @@
 package screenmodel
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -56,11 +55,6 @@ class HomeScreenModel(
     findStudentJob = screenModelScope.launch {
       findStudent(searchTextField.value.text)
     }
-  }
-
-  fun getStudentHash(redirectPath: String): String {
-    val split = redirectPath.split("/")
-    return if (redirectPath.isNotEmpty()) return split.last() else redirectPath
   }
 }
 

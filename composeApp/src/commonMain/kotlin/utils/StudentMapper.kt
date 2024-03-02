@@ -17,12 +17,17 @@ fun StudentSearchResponse.toStudents(): List<Student> {
         studentNumber,
         institution,
         major,
-        studentResp.websiteLink.orEmpty()
+        getStudentHash(studentResp.websiteLink.orEmpty())
       )
     } ?: run {
       return@mapNotNull null
     }
   }
+}
+
+fun getStudentHash(redirectPath: String): String {
+  val split = redirectPath.split("/")
+  return if (redirectPath.isNotEmpty()) return split.last() else redirectPath
 }
 
 fun StudentDetailResponse.toStudentDetail(): StudentDetail {

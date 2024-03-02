@@ -4,11 +4,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -27,10 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -57,7 +56,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
     ) { innerPadding ->
       Column(
         modifier = Modifier.padding(
-          top = innerPadding.calculateTopPadding() + 4.dp
+          top = innerPadding.calculateTopPadding()
         )
       ) {
         when (state.value) {
@@ -75,7 +74,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
     }
   }
 
-  @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+  @OptIn(ExperimentalMaterial3Api::class)
   @Composable
   private fun AppBar() {
     val navigator = LocalNavigator.current
@@ -96,10 +95,12 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
   private fun LoadedContainer(studentDetail: StudentDetail) {
+    val tabIndex = mutableStateOf(0)
+    val tabs = listOf("Status History", "Study History")
     LazyColumn (modifier = Modifier.fillMaxSize()) {
       item {
         Card(
-          modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 20.dp).fillMaxWidth(),
+          modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth(),
           shape = MaterialTheme.shapes.medium
         ) {
           Column(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp).fillMaxWidth()) {
@@ -119,25 +120,26 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         }
       }
       stickyHeader {
-        var tabIndex by remember { mutableStateOf(0) }
-        val tabs = listOf("Status History", "Study History")
         TabRow(
-          selectedTabIndex = 0,
+          selectedTabIndex = tabIndex.value,
           containerColor = MaterialTheme.colorScheme.primary,
           contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
           tabs.forEachIndexed { index, title ->
             Tab(
               text = { Text(title) },
-              selected = tabIndex == index,
-              onClick = { tabIndex = index }
+              selected = tabIndex.value == index,
+              onClick = { tabIndex.value = index }
             )
           }
         }
-        when (tabIndex) {
-          0 -> StatusHistorySection(studentDetail.statusHistories)
-          1 -> StudyHistorySection(studentDetail.studyHistories)
-        }
+      }
+      when (tabIndex.value) {
+        0 -> items(studentDetail.statusHistories) { StatusHistoryItem(it) }
+        1 -> items(studentDetail.studyHistories) { StudyHistoryItem(it) }
+      }
+      item {
+        Spacer(Modifier.height(16.dp))
       }
     }
   }
@@ -153,13 +155,38 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   }
 
   @Composable
-  private fun StatusHistorySection(model: List<StudentDetail.StatusHistory>) {
+  private fun StatusHistoryItem(history: StudentDetail.StatusHistory) {
+    Card(
+      modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        .fillMaxWidth(), shape = MaterialTheme.shapes.medium
+    ) {
+      Column(
+        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+          .fillMaxWidth()
+      ) {
+        InfoRow("Semester", history.semesterId)
+        InfoRow("Status", history.status)
+        InfoRow("Credits", history.semesterCredits)
+      }
+    }
   }
 
-  @Composable
-  private fun StudyHistorySection(model: List<StudentDetail.StudyHistory>) {
-
-  }
+  @Composable private fun StudyHistoryItem(history: StudentDetail.StudyHistory) {
+    Card(
+      modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        .fillMaxWidth(), shape = MaterialTheme.shapes.medium
+    ) {
+      Column(
+        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+          .fillMaxWidth()
+      ) {
+        InfoRow("Semester", history.semesterId)
+        InfoRow("Subject code", history.subjectCode)
+        InfoRow("Subject", history.subjectName)
+        InfoRow("Credits", history.credits)
+      }
+    }
+}
 
   @Composable
   private fun Loading() {
