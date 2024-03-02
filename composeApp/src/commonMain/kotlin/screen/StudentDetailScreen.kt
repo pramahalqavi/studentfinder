@@ -38,7 +38,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import model.StudentDetail
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import screenmodel.DetailScreenState
 import screenmodel.StudentDetailScreenModel
 
