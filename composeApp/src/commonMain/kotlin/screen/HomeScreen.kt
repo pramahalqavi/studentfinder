@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import base.getAppBarColor
+import base.getOnAppBarColor
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -75,8 +77,8 @@ class HomeScreen : Screen {
   private fun AppBar() {
     TopAppBar(
       colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary
+        containerColor = getAppBarColor(),
+        titleContentColor = getOnAppBarColor()
       ),
       title = {
         Text("Student Finder")
@@ -91,7 +93,7 @@ class HomeScreen : Screen {
       shape = MaterialTheme.shapes.medium,
       maxLines = 1,
       leadingIcon = {
-        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
       },
       label = {
         Text("Enter student name or ID")
@@ -166,9 +168,9 @@ class HomeScreen : Screen {
   private fun InfoRow(label: String, value: String) {
     if (value.isBlank()) return
     Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(5f), text = label, textAlign = TextAlign.End)
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(14f), text = value, textAlign = TextAlign.Start)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(5f), text = label, textAlign = TextAlign.End)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(14f), text = value, textAlign = TextAlign.Start)
     }
   }
 

@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import base.getAppBarColor
+import base.getOnAppBarColor
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -79,11 +81,11 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
     val navigator = LocalNavigator.current
     TopAppBar(
       navigationIcon = { IconButton(onClick = { navigator?.pop() }) {
-        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null, tint = getOnAppBarColor())
       } },
       colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary
+        containerColor = getAppBarColor(),
+        titleContentColor = getOnAppBarColor()
       ),
       title = {
         Text("Student Detail")
@@ -121,8 +123,8 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       stickyHeader {
         TabRow(
           selectedTabIndex = tabIndex.value,
-          containerColor = MaterialTheme.colorScheme.primary,
-          contentColor = MaterialTheme.colorScheme.onPrimary
+          containerColor = getAppBarColor(),
+          contentColor = getOnAppBarColor()
         ) {
           tabs.forEachIndexed { index, title ->
             Tab(
@@ -134,8 +136,12 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         }
       }
       when (tabIndex.value) {
-        0 -> items(studentDetail.statusHistories) { StatusHistoryItem(it) }
-        1 -> items(studentDetail.studyHistories) { StudyHistoryItem(it) }
+        0 -> itemsIndexed(studentDetail.statusHistories) { idx, item ->
+          StatusHistoryItem(idx, item)
+        }
+        1 -> itemsIndexed(studentDetail.studyHistories) { idx, item ->
+          StudyHistoryItem(idx, item)
+        }
       }
       item {
         Spacer(Modifier.height(16.dp))
@@ -147,42 +153,47 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   private fun InfoRow(label: String, value: String) {
     if (value.isBlank()) return
     Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(6f), text = label, textAlign = TextAlign.End)
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
-      Text(style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(13f), text = value, textAlign = TextAlign.Start)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(6f), text = label, textAlign = TextAlign.End)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
+      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(13f), text = value, textAlign = TextAlign.Start)
     }
   }
 
   @Composable
-  private fun StatusHistoryItem(history: StudentDetail.StatusHistory) {
+  private fun StatusHistoryItem(index: Int, history: StudentDetail.StatusHistory) {
     Card(
       modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         .fillMaxWidth(), shape = MaterialTheme.shapes.medium
     ) {
-      Column(
-        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
-          .fillMaxWidth()
+      Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+        .fillMaxWidth()
       ) {
-        InfoRow("Semester", history.semesterId)
-        InfoRow("Status", history.status)
-        InfoRow("Credits", history.semesterCredits)
+        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = "${index + 1}", textAlign = TextAlign.Center)
+        Column(modifier = Modifier.weight(24f)) {
+          InfoRow("Semester", history.semesterId)
+          InfoRow("Status", history.status)
+          InfoRow("Credits", history.semesterCredits)
+        }
       }
     }
   }
 
-  @Composable private fun StudyHistoryItem(history: StudentDetail.StudyHistory) {
+  @Composable
+  private fun StudyHistoryItem(index: Int, history: StudentDetail.StudyHistory) {
     Card(
       modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         .fillMaxWidth(), shape = MaterialTheme.shapes.medium
     ) {
-      Column(
-        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
-          .fillMaxWidth()
+      Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+        .fillMaxWidth()
       ) {
-        InfoRow("Semester", history.semesterId)
-        InfoRow("Subject code", history.subjectCode)
-        InfoRow("Subject", history.subjectName)
-        InfoRow("Credits", history.credits)
+        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = "${index + 1}", textAlign = TextAlign.Center)
+        Column(modifier = Modifier.weight(24f)) {
+          InfoRow("Semester", history.semesterId)
+          InfoRow("Subject code", history.subjectCode)
+          InfoRow("Subject", history.subjectName)
+          InfoRow("Credits", history.credits)
+        }
       }
     }
 }

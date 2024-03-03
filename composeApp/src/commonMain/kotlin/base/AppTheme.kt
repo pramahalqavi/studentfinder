@@ -151,3 +151,9 @@ fun AppTheme(
     content = content
   )
 }
+
+@Composable
+fun getAppBarColor(): Color = MaterialTheme.colorScheme.primary
+
+@Composable
+fun getOnAppBarColor(): Color = MaterialTheme.colorScheme.onPrimary
