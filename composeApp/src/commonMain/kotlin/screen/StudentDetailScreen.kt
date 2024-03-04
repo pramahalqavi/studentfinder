@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import base.getAppBarColor
+import base.getCardElevation
 import base.getOnAppBarColor
 import base.getSelectedOnAppBarColor
 import cafe.adriel.voyager.core.screen.Screen
@@ -103,7 +104,8 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       item {
         Card(
           modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth(),
-          shape = MaterialTheme.shapes.medium
+          shape = MaterialTheme.shapes.medium,
+          elevation = getCardElevation()
         ) {
           Column(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp).fillMaxWidth()) {
             with(studentDetail.info) {
@@ -201,7 +203,8 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   private fun StatusHistoryItem(index: Int, history: StudentDetail.StatusHistory) {
     Card(
       modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
-        .fillMaxWidth(), shape = MaterialTheme.shapes.medium
+        .fillMaxWidth(), shape = MaterialTheme.shapes.medium,
+      elevation = getCardElevation()
     ) {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()
@@ -220,7 +223,8 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   private fun StudyHistoryItem(index: Int, history: StudentDetail.StudyHistory) {
     Card(
       modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
-        .fillMaxWidth(), shape = MaterialTheme.shapes.medium
+        .fillMaxWidth(), shape = MaterialTheme.shapes.medium,
+      elevation = getCardElevation()
     ) {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()

@@ -65,6 +65,7 @@ moko-mvvm-compose = { module = "dev.icerock.moko:mvvm-compose", version.ref = "m
 moko-mvvm-flow-compose = { module = "dev.icerock.moko:mvvm-flow-compose", version.ref = "moko" }
 moko-mvvm-livedata-compose = { module = "dev.icerock.moko:mvvm-livedata-compose", version.ref = "moko" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+google-accompanist = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "google-accompanist" }
 
 [bundles]
 ktor = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-client-cio", "ktor-client-logging", "ktor-serialization"]

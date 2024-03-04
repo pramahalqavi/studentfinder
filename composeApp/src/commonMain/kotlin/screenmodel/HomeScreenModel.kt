@@ -44,7 +44,7 @@ class HomeScreenModel(
     _screenState.value = HomeScreenState.Loading
     studentRepository.findStudent(searchTerm).flowOn(schedulerProvider.io()).collect { result ->
       if (result.isSuccess) {
-        _screenState.value = HomeScreenState.Loaded(result.getOrDefault(emptyList()))
+        _screenState.value = HomeScreenState.Loaded(result.getOrDefault(emptyList()), true)
       } else {
         _screenState.value = HomeScreenState.Error(result.exceptionOrNull())
       }
@@ -56,10 +56,16 @@ class HomeScreenModel(
       findStudent(searchTextField.value.text)
     }
   }
+
+  fun onClearTextField() {
+    findStudentJob?.cancel()
+    searchTextField.value = TextFieldValue()
+    _screenState.value = HomeScreenState.Loaded()
+  }
 }
 
 sealed class HomeScreenState {
   data object Loading : HomeScreenState()
-  class Loaded(var students: List<Student> = emptyList()) : HomeScreenState()
+  class Loaded(var students: List<Student> = emptyList(), var isInitialized: Boolean = false) : HomeScreenState()
   class Error(var throwable: Throwable?) : HomeScreenState()
 }

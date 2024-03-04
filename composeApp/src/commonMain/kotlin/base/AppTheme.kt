@@ -1,11 +1,14 @@
 package base
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 val md_theme_light_primary = Color(0xFF4755B6)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
@@ -160,3 +163,8 @@ fun getOnAppBarColor(): Color = MaterialTheme.colorScheme.onPrimary
 
 @Composable
 fun getSelectedOnAppBarColor(): Color = MaterialTheme.colorScheme.tertiaryContainer
+
+@Composable
+fun getCardElevation(): CardElevation = CardDefaults.cardElevation(
+  defaultElevation = 4.dp
+)
