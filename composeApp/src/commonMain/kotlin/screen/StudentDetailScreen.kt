@@ -185,9 +185,26 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   private fun InfoRow(label: String, value: String) {
     if (value.isBlank()) return
     Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(6f), text = label, textAlign = TextAlign.End)
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(13f), text = value, textAlign = TextAlign.Start)
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(6f),
+        text = label,
+        textAlign = TextAlign.End,
+        color = getAppBarColor()
+      )
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(1f),
+        text = ":",
+        textAlign = TextAlign.Center,
+        color = getAppBarColor()
+      )
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(13f),
+        text = value,
+        textAlign = TextAlign.Start
+      )
     }
   }
 
@@ -212,7 +229,13 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()
       ) {
-        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f).padding(vertical = 12.dp), text = "${index + 1}", textAlign = TextAlign.Center)
+        Text(
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.weight(1f).padding(vertical = 12.dp),
+          text = "${index + 1}",
+          textAlign = TextAlign.Center,
+          color = getAppBarColor()
+        )
         Column(modifier = Modifier.weight(24f)) {
           InfoRow("Semester", history.semesterId)
           InfoRow("Status", history.status)
@@ -232,7 +255,13 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()
       ) {
-        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f).padding(vertical = 12.dp), text = "${index + 1}", textAlign = TextAlign.Center)
+        Text(
+          style = MaterialTheme.typography.bodySmall,
+          modifier = Modifier.weight(1f).padding(vertical = 12.dp),
+          text = "${index + 1}",
+          textAlign = TextAlign.Center,
+          color = getAppBarColor()
+        )
         Column(modifier = Modifier.weight(24f)) {
           InfoRow("Semester", history.semesterId)
           InfoRow("Subject code", history.subjectCode)

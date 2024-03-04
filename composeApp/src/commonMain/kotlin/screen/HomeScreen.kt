@@ -206,9 +206,26 @@ class HomeScreen : Screen {
   private fun InfoRow(label: String, value: String) {
     if (value.isBlank()) return
     Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(5f), text = label, textAlign = TextAlign.End)
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = ":", textAlign = TextAlign.Center)
-      Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(14f), text = value, textAlign = TextAlign.Start)
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(5f),
+        text = label,
+        textAlign = TextAlign.End,
+        color = getAppBarColor()
+      )
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(1f),
+        text = ":",
+        textAlign = TextAlign.Center,
+        color = getAppBarColor()
+      )
+      Text(
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.weight(14f),
+        text = value,
+        textAlign = TextAlign.Start
+      )
     }
   }
 
