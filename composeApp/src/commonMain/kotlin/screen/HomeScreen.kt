@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -60,13 +63,12 @@ class HomeScreen : Screen {
       Column(
         modifier = Modifier.padding(
           top = innerPadding.calculateTopPadding() + 4.dp
-        )
+        ).windowInsetsPadding(WindowInsets.navigationBars)
       ) {
         val homeState = screenModel.screenState.collectAsState()
         SearchTextField(screenModel)
         when (homeState.value) {
           is HomeScreenState.Loading -> Loading()
-
           is HomeScreenState.Loaded -> {
             val loadedState = screenModel.screenState.value as HomeScreenState.Loaded
             if (loadedState.students.isEmpty() && loadedState.isInitialized) {
@@ -75,7 +77,6 @@ class HomeScreen : Screen {
               SuccessSearchResult(loadedState, screenModel)
             }
           }
-
           is HomeScreenState.Error -> ErrorSearchResult(screenModel)
         }
       }
@@ -129,8 +130,10 @@ class HomeScreen : Screen {
           Text("Enter student name or ID")
         },
         onValueChange = {
+          if (it.text != screenModel.searchTextField.value.text) {
+            screenModel.findStudentWithDebounce(it.text)
+          }
           screenModel.searchTextField.value = it
-          screenModel.findStudentWithDebounce(it.text)
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
