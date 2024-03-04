@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -93,7 +94,7 @@ class HomeScreen : Screen {
       shape = MaterialTheme.shapes.medium,
       maxLines = 1,
       leadingIcon = {
-        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
+        Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
       },
       label = {
         Text("Enter student name or ID")
@@ -114,11 +115,16 @@ class HomeScreen : Screen {
   @Composable
   private fun Loading() {
     Column(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally
+      modifier = Modifier.fillMaxSize()
     ) {
-      CircularProgressIndicator()
+      Column(
+        modifier = Modifier.weight(1f).fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        CircularProgressIndicator()
+      }
+      Spacer(modifier = Modifier.weight(1f).fillMaxSize())
     }
   }
 
@@ -129,7 +135,7 @@ class HomeScreen : Screen {
       contentPadding = PaddingValues(top = 8.dp)
     ) {
       items(successState.students) {
-        StudentItem(it, screenModel)
+        StudentItem(it)
       }
     }
   }
@@ -146,7 +152,7 @@ class HomeScreen : Screen {
   }
 
   @Composable
-  private fun StudentItem(student: Student, screenModel: HomeScreenModel) {
+  private fun StudentItem(student: Student) {
     val navigator = LocalNavigator.current
     Card(
       modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth()

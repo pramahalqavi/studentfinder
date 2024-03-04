@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import base.getAppBarColor
 import base.getOnAppBarColor
+import base.getSelectedOnAppBarColor
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -65,8 +68,6 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
           is DetailScreenState.Loaded -> {
             (screenModel.screenState.value as DetailScreenState.Loaded).studentDetail?.let {
               LoadedContainer(it)
-            } ?: run {
-              ErrorContainer(screenModel)
             }
           }
           is DetailScreenState.Error -> ErrorContainer(screenModel)
@@ -124,23 +125,49 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         TabRow(
           selectedTabIndex = tabIndex.value,
           containerColor = getAppBarColor(),
-          contentColor = getOnAppBarColor()
+          contentColor = getOnAppBarColor(),
+          indicator = { tabPositions ->
+            if (tabIndex.value < tabPositions.size) {
+              TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex.value]),
+                color = getSelectedOnAppBarColor()
+              )
+            }
+          }
         ) {
           tabs.forEachIndexed { index, title ->
             Tab(
               text = { Text(title) },
               selected = tabIndex.value == index,
-              onClick = { tabIndex.value = index }
+              onClick = { tabIndex.value = index },
+              selectedContentColor = getSelectedOnAppBarColor(),
+              unselectedContentColor = getOnAppBarColor()
             )
           }
         }
       }
       when (tabIndex.value) {
-        0 -> itemsIndexed(studentDetail.statusHistories) { idx, item ->
-          StatusHistoryItem(idx, item)
+        0 -> {
+          if (studentDetail.statusHistories.isEmpty()) {
+            item {
+              EmptyContainer()
+            }
+          } else {
+            itemsIndexed(studentDetail.statusHistories) { idx, item ->
+              StatusHistoryItem(idx, item)
+            }
+          }
         }
-        1 -> itemsIndexed(studentDetail.studyHistories) { idx, item ->
-          StudyHistoryItem(idx, item)
+        1 -> {
+          if (studentDetail.studyHistories.isEmpty()) {
+            item {
+              EmptyContainer()
+            }
+          } else {
+            itemsIndexed(studentDetail.studyHistories) { idx, item ->
+              StudyHistoryItem(idx, item)
+            }
+          }
         }
       }
       item {
@@ -160,6 +187,17 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   }
 
   @Composable
+  private fun EmptyContainer() {
+    Column(
+      modifier = Modifier.fillMaxWidth().padding(vertical = 100.dp),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      Text(text = "No data")
+    }
+  }
+
+  @Composable
   private fun StatusHistoryItem(index: Int, history: StudentDetail.StatusHistory) {
     Card(
       modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
@@ -168,7 +206,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()
       ) {
-        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = "${index + 1}", textAlign = TextAlign.Center)
+        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f).padding(vertical = 12.dp), text = "${index + 1}", textAlign = TextAlign.Center)
         Column(modifier = Modifier.weight(24f)) {
           InfoRow("Semester", history.semesterId)
           InfoRow("Status", history.status)
@@ -187,7 +225,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
         .fillMaxWidth()
       ) {
-        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f), text = "${index + 1}", textAlign = TextAlign.Center)
+        Text(style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f).padding(vertical = 12.dp), text = "${index + 1}", textAlign = TextAlign.Center)
         Column(modifier = Modifier.weight(24f)) {
           InfoRow("Semester", history.semesterId)
           InfoRow("Subject code", history.subjectCode)

@@ -64,5 +64,10 @@ fun StudentDetailResponse.toStudentDetail(): StudentDetail {
 
 fun semesterIdToSemesterYear(semesterId: String): String {
   if (semesterId.length <= 4) return semesterId
-  return "${semesterId[semesterId.length - 1]} - ${semesterId.substring(0, semesterId.length - 1)}"
+  return try {
+    val year = semesterId.substring(0, semesterId.length - 1).toInt()
+    "${semesterId[semesterId.length - 1]} - ${year}/${year + 1}"
+  } catch (e: Exception) {
+    "${semesterId[semesterId.length - 1]} - ${semesterId.substring(0, semesterId.length - 1)}"
+  }
 }
