@@ -21,6 +21,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
 import screen.HomeScreen
+import studentfinder.composeapp.generated.resources.Res
+import studentfinder.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun App() {
@@ -45,7 +47,7 @@ fun Default() {
             }
             AnimatedVisibility(showContent) {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource("compose-multiplatform.xml"), null)
+                    Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
                 }
             }

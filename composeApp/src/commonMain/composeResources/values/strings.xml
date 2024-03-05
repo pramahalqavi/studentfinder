@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="student_finder">Student Finder</string>
+    <string name="search_text_field_label">Enter student name or ID</string>
+    <string name="no_result">No result</string>
+    <string name="generic_error_message">An error occurred</string>
+    <string name="retry">Retry</string>
+
+    <string name="student_detail">Student Detail</string>
+    <string name="status_history">Status History</string>
+    <string name="study_history">Study History</string>
+
+    <string name="name">Name</string>
+    <string name="student_id">Student ID</string>
+    <string name="institution">Institution</string>
+    <string name="major">Major</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="education_level">Education level</string>
+    <string name="initial_semester">Initial semester</string>
+    <string name="initial_student_status">Initial student status</string>
+    <string name="current_student_status">Current student status</string>
+    <string name="diploma_number">Diploma number</string>
+
+    <string name="no_data">No data</string>
+    <string name="semester">Semester</string>
+    <string name="status">Status</string>
+    <string name="credits">Credits</string>
+    <string name="subject_code">Subject code</string>
+    <string name="subject">Subject</string>
+
+</resources>

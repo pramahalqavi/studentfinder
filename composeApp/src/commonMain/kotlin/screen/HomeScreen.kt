@@ -1,14 +1,17 @@
 package screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -22,7 +25,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +37,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -45,20 +46,34 @@ import androidx.compose.ui.unit.dp
 import base.getAppBarColor
 import base.getCardElevation
 import base.getOnAppBarColor
+import base.shimmerBrush
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import model.Student
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import screenmodel.HomeScreenModel
 import screenmodel.HomeScreenState
+import studentfinder.composeapp.generated.resources.Res
+import studentfinder.composeapp.generated.resources.generic_error_message
+import studentfinder.composeapp.generated.resources.institution
+import studentfinder.composeapp.generated.resources.major
+import studentfinder.composeapp.generated.resources.name
+import studentfinder.composeapp.generated.resources.no_result
+import studentfinder.composeapp.generated.resources.retry
+import studentfinder.composeapp.generated.resources.search_text_field_label
+import studentfinder.composeapp.generated.resources.student_finder
+import studentfinder.composeapp.generated.resources.student_id
 
+@OptIn(ExperimentalResourceApi::class)
 class HomeScreen : Screen {
   @Composable
   override fun Content() {
     val screenModel = getScreenModel<HomeScreenModel>()
     Scaffold(topBar = {
       AppBar()
-    }, modifier = Modifier.imePadding(),
+    }, modifier = Modifier,
       content = { innerPadding ->
       Column(
         modifier = Modifier.padding(
@@ -74,7 +89,7 @@ class HomeScreen : Screen {
             if (loadedState.students.isEmpty() && loadedState.isInitialized) {
               EmptySearchResult()
             } else {
-              SuccessSearchResult(loadedState, screenModel)
+              SuccessSearchResult(loadedState)
             }
           }
           is HomeScreenState.Error -> ErrorSearchResult(screenModel)
@@ -92,12 +107,11 @@ class HomeScreen : Screen {
         titleContentColor = getOnAppBarColor()
       ),
       title = {
-        Text("Student Finder")
+        Text(stringResource(Res.string.student_finder))
       }
     )
   }
 
-  @OptIn(ExperimentalComposeUiApi::class)
   @Composable
   private fun SearchTextField(screenModel: HomeScreenModel) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -127,7 +141,7 @@ class HomeScreen : Screen {
           }
         },
         label = {
-          Text("Enter student name or ID")
+          Text(stringResource(Res.string.search_text_field_label))
         },
         onValueChange = {
           if (it.text != screenModel.searchTextField.value.text) {
@@ -151,16 +165,30 @@ class HomeScreen : Screen {
 
   @Composable
   private fun Loading() {
-    Box(
-      modifier = Modifier.fillMaxSize(),
-      contentAlignment = Alignment.Center
-    ) {
-      CircularProgressIndicator()
+    Column(modifier = Modifier.padding(top = 8.dp)) {
+      SkeletonCard(this)
+      SkeletonCard(this)
+      SkeletonCard(this)
+      SkeletonCard(this)
+      SkeletonCard(this)
     }
   }
 
   @Composable
-  private fun SuccessSearchResult(successState: HomeScreenState.Loaded, screenModel: HomeScreenModel) {
+  private fun SkeletonCard(columnScope: ColumnScope) {
+    columnScope.run {
+      Card(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth().height(130.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = getCardElevation()
+      ) {
+        Box(modifier = Modifier.fillMaxSize().background(shimmerBrush()))
+      }
+    }
+  }
+
+  @Composable
+  private fun SuccessSearchResult(successState: HomeScreenState.Loaded) {
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
       contentPadding = PaddingValues(top = 8.dp)
@@ -174,11 +202,11 @@ class HomeScreen : Screen {
   @Composable
   private fun EmptySearchResult() {
     Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().imePadding(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text("No result")
+      Text(stringResource(Res.string.no_result))
     }
   }
 
@@ -194,10 +222,10 @@ class HomeScreen : Screen {
       elevation = getCardElevation()
     ) {
       Column(modifier = Modifier.fillMaxWidth().padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-        InfoRow("Name", student.name)
-        InfoRow("Student ID", student.studentNumber)
-        InfoRow("Institution", student.institution)
-        InfoRow("Major", student.major)
+        InfoRow(stringResource(Res.string.name), student.name)
+        InfoRow(stringResource(Res.string.student_id), student.studentNumber)
+        InfoRow(stringResource(Res.string.institution), student.institution)
+        InfoRow(stringResource(Res.string.major), student.major)
       }
     }
   }
@@ -232,16 +260,16 @@ class HomeScreen : Screen {
   @Composable
   private fun ErrorSearchResult(screenModel: HomeScreenModel) {
     Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().imePadding(),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text("An error occured")
+      Text(stringResource(Res.string.generic_error_message))
       Button(
         modifier = Modifier.padding(top = 16.dp),
         onClick = { screenModel.retrySearch() }
       ) {
-        Text("Retry")
+        Text(stringResource(Res.string.retry))
       }
     }
   }

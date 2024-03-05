@@ -36,7 +36,7 @@ fun StudentDetailResponse.toStudentDetail(): StudentDetail {
       name = studentInfo?.nmPd.orEmpty(),
       initialSemester = semesterIdToSemesterYear(studentInfo?.mulaiSmt.orEmpty()),
       studentId = studentInfo?.nipd.orEmpty(),
-      gender = if (studentInfo?.jk == "L") "Male" else if (studentInfo?.jk == "P") "Female" else "",
+      gender = studentInfo?.jk.orEmpty(),
       major = studentInfo?.namaprodi.orEmpty(),
       educationLevel = studentInfo?.namajenjang.orEmpty(),
       institution = studentInfo?.namapt.orEmpty(),

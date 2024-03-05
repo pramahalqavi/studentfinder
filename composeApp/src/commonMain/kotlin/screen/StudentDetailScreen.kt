@@ -1,8 +1,11 @@
 package screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -18,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,18 +40,47 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import base.getAppBarColor
 import base.getCardElevation
 import base.getOnAppBarColor
 import base.getSelectedOnAppBarColor
+import base.shimmerBrush
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import model.StudentDetail
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import screenmodel.DetailScreenState
 import screenmodel.StudentDetailScreenModel
+import studentfinder.composeapp.generated.resources.Res
+import studentfinder.composeapp.generated.resources.credits
+import studentfinder.composeapp.generated.resources.current_student_status
+import studentfinder.composeapp.generated.resources.diploma_number
+import studentfinder.composeapp.generated.resources.education_level
+import studentfinder.composeapp.generated.resources.female
+import studentfinder.composeapp.generated.resources.gender
+import studentfinder.composeapp.generated.resources.generic_error_message
+import studentfinder.composeapp.generated.resources.initial_semester
+import studentfinder.composeapp.generated.resources.initial_student_status
+import studentfinder.composeapp.generated.resources.institution
+import studentfinder.composeapp.generated.resources.major
+import studentfinder.composeapp.generated.resources.male
+import studentfinder.composeapp.generated.resources.name
+import studentfinder.composeapp.generated.resources.no_data
+import studentfinder.composeapp.generated.resources.retry
+import studentfinder.composeapp.generated.resources.semester
+import studentfinder.composeapp.generated.resources.status
+import studentfinder.composeapp.generated.resources.status_history
+import studentfinder.composeapp.generated.resources.student_detail
+import studentfinder.composeapp.generated.resources.student_id
+import studentfinder.composeapp.generated.resources.study_history
+import studentfinder.composeapp.generated.resources.subject
+import studentfinder.composeapp.generated.resources.subject_code
 
+@OptIn(ExperimentalResourceApi::class)
 class StudentDetailScreen(private val studentHash: String) : Screen {
 
   @Composable
@@ -62,7 +93,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
     Scaffold(
       topBar = { AppBar() }
     ) { innerPadding ->
-      Column(
+      Box(
         modifier = Modifier.padding(
           top = innerPadding.calculateTopPadding()
         ).windowInsetsPadding(WindowInsets.navigationBars)
@@ -93,7 +124,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         titleContentColor = getOnAppBarColor()
       ),
       title = {
-        Text("Student Detail")
+        Text(stringResource(Res.string.student_detail))
       }
     )
   }
@@ -102,7 +133,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   @Composable
   private fun LoadedContainer(studentDetail: StudentDetail) {
     val tabIndex = mutableStateOf(0)
-    val tabs = listOf("Status History", "Study History")
+    val tabs = listOf(stringResource(Res.string.status_history), stringResource(Res.string.study_history))
     LazyColumn (modifier = Modifier.fillMaxSize()) {
       item {
         Card(
@@ -112,16 +143,16 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         ) {
           Column(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp).fillMaxWidth()) {
             with(studentDetail.info) {
-              InfoRow("Name", name)
-              InfoRow("Gender", gender)
-              InfoRow("Institution", institution)
-              InfoRow("Major", major)
-              InfoRow("Education level", educationLevel)
-              InfoRow("Student ID", studentId)
-              InfoRow("Initial semester", initialSemester)
-              InfoRow("Initial student status", initialStudentStatus)
-              InfoRow("Current student status", currentStudentStatus)
-              InfoRow("Diploma number", diplomaNumber)
+              InfoRow(stringResource(Res.string.name), name)
+              InfoRow(stringResource(Res.string.gender), decodeGenderCode(gender))
+              InfoRow(stringResource(Res.string.institution), institution)
+              InfoRow(stringResource(Res.string.major), major)
+              InfoRow(stringResource(Res.string.education_level), educationLevel)
+              InfoRow(stringResource(Res.string.student_id), studentId)
+              InfoRow(stringResource(Res.string.initial_semester), initialSemester)
+              InfoRow(stringResource(Res.string.initial_student_status), initialStudentStatus)
+              InfoRow(stringResource(Res.string.current_student_status), currentStudentStatus)
+              InfoRow(stringResource(Res.string.diploma_number), diplomaNumber)
             }
           }
         }
@@ -133,7 +164,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
           contentColor = getOnAppBarColor(),
           indicator = { tabPositions ->
             if (tabIndex.value < tabPositions.size) {
-              TabRowDefaults.Indicator(
+              TabRowDefaults.SecondaryIndicator(
                 modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex.value]),
                 color = getSelectedOnAppBarColor()
               )
@@ -182,6 +213,15 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   }
 
   @Composable
+  private fun decodeGenderCode(genderCode: String): String {
+    return when (genderCode) {
+      "L" -> stringResource(Res.string.male)
+      "P" -> stringResource(Res.string.female)
+      else -> ""
+    }
+  }
+
+  @Composable
   private fun InfoRow(label: String, value: String) {
     if (value.isBlank()) return
     Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
@@ -215,7 +255,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text(text = "No data")
+      Text(text = stringResource(Res.string.no_data))
     }
   }
 
@@ -237,9 +277,9 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
           color = getAppBarColor()
         )
         Column(modifier = Modifier.weight(24f)) {
-          InfoRow("Semester", history.semesterId)
-          InfoRow("Status", history.status)
-          InfoRow("Credits", history.semesterCredits)
+          InfoRow(stringResource(Res.string.semester), history.semesterId)
+          InfoRow(stringResource(Res.string.status), history.status)
+          InfoRow(stringResource(Res.string.credits), history.semesterCredits)
         }
       }
     }
@@ -263,10 +303,10 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
           color = getAppBarColor()
         )
         Column(modifier = Modifier.weight(24f)) {
-          InfoRow("Semester", history.semesterId)
-          InfoRow("Subject code", history.subjectCode)
-          InfoRow("Subject", history.subjectName)
-          InfoRow("Credits", history.credits)
+          InfoRow(stringResource(Res.string.semester), history.semesterId)
+          InfoRow(stringResource(Res.string.subject_code), history.subjectCode)
+          InfoRow(stringResource(Res.string.subject), history.subjectName)
+          InfoRow(stringResource(Res.string.credits), history.credits)
         }
       }
     }
@@ -274,12 +314,32 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
 
   @Composable
   private fun Loading() {
-    Column(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-      CircularProgressIndicator()
+    Column(modifier = Modifier.padding(top = 16.dp)) {
+      SkeletonCard(this, 300.dp)
+      SkeletonTab(this)
+      SkeletonCard(this, 120.dp)
+      SkeletonCard(this, 120.dp)
+      SkeletonCard(this, 120.dp)
+    }
+  }
+
+  @Composable
+  private fun SkeletonTab(columnScope: ColumnScope) {
+    columnScope.run {
+      Box(modifier = Modifier.fillMaxWidth().height(72.dp).padding(bottom = 16.dp).background(shimmerBrush()))
+    }
+  }
+
+  @Composable
+  private fun SkeletonCard(columnScope: ColumnScope, height: Dp) {
+    columnScope.run {
+      Card(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth().height(height),
+        shape = MaterialTheme.shapes.medium,
+        elevation = getCardElevation()
+      ) {
+        Box(modifier = Modifier.fillMaxSize().background(shimmerBrush()))
+      }
     }
   }
 
@@ -290,12 +350,12 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text("An error occured")
+      Text(stringResource(Res.string.generic_error_message))
       Button(
         modifier = Modifier.padding(top = 16.dp),
         onClick = { screenModel.getStudentDetail(studentHash) }
       ) {
-        Text("Retry")
+        Text(stringResource(Res.string.retry))
       }
     }
   }
