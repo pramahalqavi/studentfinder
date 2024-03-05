@@ -326,7 +326,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
   @Composable
   private fun SkeletonTab(columnScope: ColumnScope) {
     columnScope.run {
-      Box(modifier = Modifier.fillMaxWidth().height(72.dp).padding(bottom = 16.dp).background(shimmerBrush()))
+      Box(modifier = Modifier.fillMaxWidth().height(64.dp).padding(bottom = 16.dp).background(shimmerBrush()))
     }
   }
 
