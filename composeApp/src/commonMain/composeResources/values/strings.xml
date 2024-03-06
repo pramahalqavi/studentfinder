@@ -1,7 +1,7 @@
 <resources>
 
     <string name="student_finder">Student Finder</string>
-    <string name="search_text_field_label">Enter student name or ID</string>
+    <string name="search_text_field_label">Enter student name / ID / institution</string>
     <string name="no_result">No result</string>
     <string name="generic_error_message">An error occurred</string>
     <string name="retry">Retry</string>
