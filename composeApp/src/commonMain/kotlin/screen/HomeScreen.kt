@@ -160,6 +160,7 @@ class HomeScreen : Screen {
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
           keyboard?.hide()
+          screenModel.findStudent()
         })
       )
     }
@@ -269,7 +270,7 @@ class HomeScreen : Screen {
       Text(stringResource(Res.string.generic_error_message))
       Button(
         modifier = Modifier.padding(top = 16.dp),
-        onClick = { screenModel.retrySearch() }
+        onClick = { screenModel.findStudent() }
       ) {
         Text(stringResource(Res.string.retry))
       }

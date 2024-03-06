@@ -36,24 +36,28 @@ class HomeScreenModel(
     }
     findStudentJob = screenModelScope.launch {
       delay(1000L)
-      findStudent(searchTerm)
+      findStudentApiCall(searchTerm)
     }
   }
 
-  private suspend fun findStudent(searchTerm: String) {
+  private suspend fun findStudentApiCall(searchTerm: String) {
     _screenState.value = HomeScreenState.Loading
     studentRepository.findStudent(searchTerm).flowOn(schedulerProvider.io()).collect { result ->
       if (result.isSuccess) {
-        _screenState.value = HomeScreenState.Loaded(result.getOrDefault(emptyList()), true)
+        _screenState.value = HomeScreenState.Loaded(true, searchTerm, result.getOrDefault(emptyList()))
       } else {
         _screenState.value = HomeScreenState.Error(result.exceptionOrNull())
       }
     }
   }
 
-  fun retrySearch() {
+  fun findStudent() {
+    if (screenState.value is HomeScreenState.Loading ||
+      (screenState.value is HomeScreenState.Loaded &&
+          (screenState.value as HomeScreenState.Loaded).query == searchTextField.value.text)) return
+    if (findStudentJob?.isActive == true) findStudentJob?.cancel()
     findStudentJob = screenModelScope.launch {
-      findStudent(searchTextField.value.text)
+      findStudentApiCall(searchTextField.value.text)
     }
   }
 
@@ -66,6 +70,10 @@ class HomeScreenModel(
 
 sealed class HomeScreenState {
   data object Loading : HomeScreenState()
-  class Loaded(var students: List<Student> = emptyList(), var isInitialized: Boolean = false) : HomeScreenState()
-  class Error(var throwable: Throwable?) : HomeScreenState()
+  class Loaded(
+    val isInitialized: Boolean = false,
+    val query: String = "",
+    val students: List<Student> = emptyList()
+  ) : HomeScreenState()
+  class Error(val throwable: Throwable?) : HomeScreenState()
 }
