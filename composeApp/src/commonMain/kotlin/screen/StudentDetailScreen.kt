@@ -141,7 +141,7 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
           shape = MaterialTheme.shapes.medium,
           elevation = getCardElevation()
         ) {
-          Column(modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp).fillMaxWidth()) {
+          Column(modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth()) {
             with(studentDetail.info) {
               InfoRow(stringResource(Res.string.name), name)
               InfoRow(stringResource(Res.string.gender), decodeGenderCode(gender))
@@ -266,17 +266,17 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         .fillMaxWidth(), shape = MaterialTheme.shapes.medium,
       elevation = getCardElevation()
     ) {
-      Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+      Row( modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
         .fillMaxWidth()
       ) {
         Text(
           style = MaterialTheme.typography.bodySmall,
           modifier = Modifier.weight(1f).padding(vertical = 12.dp),
           text = "${index + 1}",
-          textAlign = TextAlign.Center,
+          textAlign = TextAlign.Start,
           color = getAppBarColor()
         )
-        Column(modifier = Modifier.weight(24f)) {
+        Column(modifier = Modifier.weight(12f)) {
           InfoRow(stringResource(Res.string.semester), history.semesterId)
           InfoRow(stringResource(Res.string.status), history.status)
           InfoRow(stringResource(Res.string.credits), history.semesterCredits)
@@ -292,17 +292,17 @@ class StudentDetailScreen(private val studentHash: String) : Screen {
         .fillMaxWidth(), shape = MaterialTheme.shapes.medium,
       elevation = getCardElevation()
     ) {
-      Row( modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+      Row( modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
         .fillMaxWidth()
       ) {
         Text(
           style = MaterialTheme.typography.bodySmall,
           modifier = Modifier.weight(1f).padding(vertical = 12.dp),
           text = "${index + 1}",
-          textAlign = TextAlign.Center,
+          textAlign = TextAlign.Start,
           color = getAppBarColor()
         )
-        Column(modifier = Modifier.weight(24f)) {
+        Column(modifier = Modifier.weight(12f)) {
           InfoRow(stringResource(Res.string.semester), history.semesterId)
           InfoRow(stringResource(Res.string.subject_code), history.subjectCode)
           InfoRow(stringResource(Res.string.subject), history.subjectName)
