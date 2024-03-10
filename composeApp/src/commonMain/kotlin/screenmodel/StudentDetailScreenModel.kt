@@ -34,6 +34,6 @@ class StudentDetailScreenModel(
 
 sealed class DetailScreenState {
   data object Loading : DetailScreenState()
-  class Loaded(var studentDetail: StudentDetail? = null) : DetailScreenState()
-  class Error(var throwable: Throwable?) : DetailScreenState()
+  class Loaded(val studentDetail: StudentDetail? = null) : DetailScreenState()
+  class Error(val throwable: Throwable?) : DetailScreenState()
 }
